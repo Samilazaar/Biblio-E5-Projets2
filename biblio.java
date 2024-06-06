@@ -2,10 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class biblio extends JFrame {
 
@@ -87,7 +84,6 @@ public class biblio extends JFrame {
 
         add(formPanel, BorderLayout.CENTER);
 
-
         // Ajout des écouteurs d'événements aux boutons
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -102,8 +98,6 @@ public class biblio extends JFrame {
                 handleSignup();
             }
         });
-
-    
     }
 
     private void handleLogin() {
@@ -116,14 +110,16 @@ public class biblio extends JFrame {
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, password);
-                if (preparedStatement.executeQuery().next()) {
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
                     // Connexion réussie
+                    int userId = resultSet.getInt("id_utilisateur");
                     JOptionPane.showMessageDialog(null, "Connexion réussie pour l'utilisateur : " + username);
                     if (username.equals("sami") && password.equals("sami")) {
-                        admin adminPage = new admin();
+                        admin adminPage = new admin(userId);
                         adminPage.setVisible(true);
                     } else {
-                        livres livresPage = new livres();
+                        livres livresPage = new livres(userId);
                         livresPage.setVisible(true);
                     }
 
@@ -153,14 +149,12 @@ public class biblio extends JFrame {
                 preparedStatement.setString(2, password);
                 preparedStatement.setString(3, email);
                 preparedStatement.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Inscription réussie pour l'utilisateur : " + username);
             }
-            JOptionPane.showMessageDialog(null, "Inscription réussie pour l'utilisateur : " + username);
-        
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Erreur SQL lors de l'inscription : " + ex.getMessage());
         }
-        
     }
 
     public static void main(String[] args) {

@@ -19,11 +19,12 @@ public class livres extends JFrame {
     private JButton viewCartButton;
     private JButton categoryButton; // Bouton Catégorie
     private List<Emprunt> panier = new ArrayList<>();
-    private String[] categories = {"Science Fiction", "Roman", "Aventure", "Policier"};
-    private int categoryIndex = 0;
-    private int userId = 1; // Utilisateur par défaut
+    private String[] categories = {"Science-fiction", "Roman", "Aventure", "Policier","Magie"};
+    private int userId; // ID de l'utilisateur connecté
 
-    public livres() {
+    public livres(int userId) { // Modification du constructeur pour prendre userId
+        this.userId = userId;
+
         setTitle("Page de Présentation des Livres");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -167,9 +168,11 @@ public class livres extends JFrame {
     }
 
     private void showCart() {
-        StringBuilder cartContent = new StringBuilder("Panier :\n");
+        StringBuilder cartContent = new StringBuilder("Panier de l'utilisateur " + userId + ":\n");
         for (Emprunt emprunt : panier) {
-            cartContent.append(emprunt.getDueDate()).append("\n");
+            cartContent.append("Livre ID: ").append(emprunt.getId())
+                       .append(", Date de retour: ").append(emprunt.getDueDate())
+                       .append("\n");
         }
         JOptionPane.showMessageDialog(this, cartContent.toString());
     }
@@ -184,6 +187,7 @@ public class livres extends JFrame {
                 preparedStatement.setDate(4, Date.valueOf(LocalDate.now().plusWeeks(2)));
                 preparedStatement.executeUpdate();
                 JOptionPane.showMessageDialog(this, "Livre emprunté avec succès!");
+                loadEmpruntsFromDatabase(); // Recharger les emprunts pour mettre à jour le panier
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -192,10 +196,11 @@ public class livres extends JFrame {
     }
 
     public static void main(String[] args) {
+        int userId = 1; // Par défaut, utilisez l'ID utilisateur 1 pour les tests
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new livres().setVisible(true);
+                new livres(userId).setVisible(true);
             }
         });
     }
@@ -270,27 +275,3 @@ class Emprunt {
         return dueDate;
     }
 }
-
-class biblio extends JFrame {
-    public biblio() {
-        setTitle("Bibliothèque");
-        setSize(400, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-
-        JLabel titleLabel = new JLabel("Page d'accueil de la bibliothèque");
-        JButton livresButton = new JButton("Voir les Livres");
-        livresButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                new livres().setVisible(true);
-            }
-        });
-
-        setLayout(new BorderLayout());
-        add(titleLabel, BorderLayout.NORTH);
-        add(livresButton, BorderLayout.CENTER);
-    }
-}
-

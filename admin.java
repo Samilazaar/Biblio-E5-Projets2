@@ -17,8 +17,11 @@ public class admin extends JFrame {
     private JButton addBookButton;
     private JButton removeBookButton; // Bouton pour retirer un livre
     private JButton retourButton;
+    private int userId; // ID de l'utilisateur connecté
 
-    public admin() {
+    public admin(int userId) {
+        this.userId = userId;
+
         setTitle("Page Admin");
         setSize(400, 350); // Augmenté la hauteur pour inclure le champ de texte de la catégorie et le bouton retirer livre
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -110,7 +113,7 @@ public class admin extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                new livres().setVisible(true);
+                new livres(userId).setVisible(true); // Passer userId lors de la création de livres
             }
         });
         gbc.gridx = 0;
@@ -184,7 +187,7 @@ public class admin extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new admin().setVisible(true);
+                new admin(1).setVisible(true); // Par défaut, utilisez l'ID utilisateur 1 pour les tests
             }
         });
     }
