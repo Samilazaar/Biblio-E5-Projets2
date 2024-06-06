@@ -106,3 +106,5 @@ Cette application de bibliothèque permet aux utilisateurs de s'inscrire, se con
 2. Connectez-vous avec vos informations d'identification.
 3. Accédez aux différentes fonctionnalités de l'application selon vos besoins (emprunt de livres, administration, etc.).
 
+   DOC PAS TERMINÉ
+
